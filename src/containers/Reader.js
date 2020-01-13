@@ -202,13 +202,14 @@ class Reader extends React.Component {
           coverNavbar:false
         }
       } else {
+        var {height, width} = Dimensions.get('window');
         let style = {
           fontSize: this.state.fontSize,
           height: Math.ceil(this.state.fontSize * 1.35),
           lineHeight: Math.ceil(this.state.fontSize * 1.35),
-          fontWeight: '300'
+          fontWeight: '300',
+          width:width+100,
         };
-        var {height, width} = Dimensions.get('window');
         //将内容分成多个数组来显示
         content = <ListView
           style={{
@@ -239,23 +240,32 @@ class Reader extends React.Component {
           />
       }
 
+      let leftBtns = [{
+        icon: "ios-arrow-back",
+        label: "返回",
+        onPress: Actions.pop
+      }];
+
+      let rightBtns = [{
+        label: "刷新",
+        onPress: e => {
+          this.fetchContent(this.state.index, true);
+        }
+      }];
+      if (this.props.needShowDir) {
+        rightBtns.unshift({
+          icon: "ios-list-outline",
+          onPress: ()=>Actions.directory({novel:this.props.novel})
+        });
+      }
       return (
         <Container
         {...containerParams}
           >
           <Navbar
             title={current.get('title')}
-            left={{
-              icon: "ios-arrow-back",
-              label: "返回",
-              onPress: Actions.pop
-            }}
-            right={{
-              label: "刷新",
-              onPress: e => {
-                this.fetchContent(this.state.index, true);
-              }
-            }}
+            left={leftBtns}
+            right={rightBtns}
             style={{
               marginTop: this.state.navMargin
             }}
